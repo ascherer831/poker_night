@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  {% load static %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="generator" content="Jekyll v4.1.1">
+  <title>Poker Night</title>
+  <!-- Bootstrap core CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="{%static 'css/style.css'%}">
+</head>
+<body class="bg-dark">
+  <header class="sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand px-2" href="/poker_night/home"><img class="logo" src="/static/img/poker_night.png" alt="Poker Night"></a>
+        <div class="dropdown px-4">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+            Menu
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end bg-secondary" aria-labelledby="dropdownMenu2">
+            <li><a class="dropdown-item text-white" type="button" href="/poker_night/home"><img src="/static/img/home.svg" alt="Home Icon"> Home</a></li>
+            <li><a class="dropdown-item text-white" type="button" href="/poker_night/{{this_user.id}}/my_events" ><img src="/static/img/grid.svg" alt="Grid Icon"> My Events</a></li>
+            <li><a class="dropdown-item text-white" type="button" href="/poker_night/{{this_user.id}}/host"><img src="/static/img/calendar.svg" alt="Calendar Icon"> Host an Event</a></li>
+            <li><hr class="dropdown-divider text-white"></li>
+            <li><a class="dropdown-item text-white" type="button" href="/user/logout"><img src="/static/img/log-out.svg" alt="Logout Icon"> Logout</a></li>
+          </ul>
+        </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <main role="main">
+    <section class="jumbotron text-center border-white" id="jumbotron">
+      <div class="container">
+        <div class="align-text-top">
+          <h1 class="text-white">{{this_event.hosted_by.first_name}}'s {{this_event.tournament.style}} Tournament </h1>
+        </div>
+        <div class="btn-group-lg text-center">
+          <a href="/poker_night/{{this_user.id}}/my_events" class="btn btn-primary my-2">My Events</a>
+        </div>
+      </div>
+    </section>
+    <div class="album py-5 bg-dark">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card mb-4 shadow-md">
+              <div class="card-body">
+                <h2 class="card-title mb-3 mt-1"> 
+                  Details
+                </h2>
+                <h4 class="card-text mb-3">{{this_event.scheduled_for|date}} at {{this_event.scheduled_for|time}}</h4>
+                <h5 class="card-text">{{this_event.street}}</h5>
+                {%if this_event.street_two%}
+                <h5 class="card-text">{{this_event.street_two}}</h5>
+                {%endif%}
+                <h5 class="card-text mb-3">{{this_event.city}}, {{this_event.state}} {{this_event.zip_code}}</h5>
+                <p>
+                  <h6 class="card-text mb-2">Buy-in: ${{this_event.tournament.buy_in}}</h6>
+                  <h6 class="card-text mb-2">Re-entries: {{this_event.tournament.re_entries}} before the first break</h6>
+                  <h6 class="card-text mb-2">Levels: {{this_event.tournament.levels}} minutes</h6>
+                </p>
+                <p>
+                  <h6>Host Notes:</h6>
+                  {{this_event.notes}}
+                </p>
+                {%if this_user.id == this_event.hosted_by.id%}
+                <form  method = "POST" action="/poker_night/{{this_event.id}}/cancel" id="cancel{{this_event.id}}">
+                  {%csrf_token%}
+                </form>
+                <form method = "POST" action="/poker_night/{{this_event.id}}/tournament/edit" id="edit{{this_event.id}}">
+                  {%csrf_token%}
+                </form>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="submit" class="btn btn-danger" form="cancel{{this_event.id}}">Cancel</button>
+                    <button type="submit" class="btn  btn-primary" form="edit{{this_event.id}}">Edit</button>
+                  </div>
+                </div>  
+                  {%elif this_user in this_event.attendees.all%}
+                  <form method = "POST" action="/poker_night/{{this_event.id}}/unregister" id="unregister{{this_event.id}}">
+                    {%csrf_token%}
+                  </form>
+                  <div class="d-flex float-end">
+                    <div class="btn-group">
+                      <button type="submit" class="btn btn-danger" form="unregister{{this_event.id}}">Unregister</button>
+                    </div>
+                  </div>
+                  {%else%}
+                  <form method = "POST" action="/poker_night/{{this_event.id}}/tournament/register" id="register{{event.id}}">
+                    {%csrf_token%}
+                  </form>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                      <button type="submit" class="btn btn-primary" form="register{{view.id}}">Register</button>
+                    </div>
+                  </div>
+                  {%endif%}
+                </div>
+              </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card mb-4 shadow-md">
+              <div class="card-body">
+                <h2 class="card-title mb-3 mt-1"> 
+                    Attending
+                </h2>
+                {%for attendee in this_event.attendees.all%}
+                <h6 class="card-text mb-1">{{attendee.first_name}} {{attendee.last_name}}</h6>
+                {%endfor%}
+                <div class="card-footer text-muted">
+                  <h5 class="card-text text-end">Players: {{this_event.attendees.count}}/{{this_event.max_players}}</h5>
+                </div>
+                </div>
+              </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card mb-4 shadow-md">
+              <div class="card-body">
+                <h2 class="card-title mb-4 mt-2"> 
+                    Comments
+                </h2>
+                {%if this_user in this_event.attendees.all%}
+                <form class="col-md-9 offset-1 mb-4" action="/poker_night/{{this_event.id}}/comment" method="POST">
+                  {%csrf_token%}
+                  <div class="input-group input-group-sm mb-3">
+                    <input type="text" class="form-control" name="content">
+                    <button class="btn btn-primary" type="submit" >Comment</button>
+                  </div>
+                  <input type="hidden" name="user_id" value="{{this_user.id}}">
+                </form>
+                {%endif%}
+                {%for comment in this_event.comments.all reversed%}
+                <div class="col-md-10 offset-1 shadow-sm border border-light bg-light rounded p-2 mb-3">
+                  <h6 class=" mb-1 card-title offset-1 text-muted">{{comment.user.first_name}} {{comment.user.last_name}} | {{comment.updated_at |date}}</h6>
+                  <div class="card-text mt-2 mb-4 offset-1">{{comment.content}}</div>
+                  {%for reply in comment.replies.all%}
+                  <div class="col-md-11 bg-light offset-1">
+                    <h6 class="mb-1 card-title offset-1 text-muted">{{reply.user.first_name}} {{reply.user.last_name}} {{reply.updated_at | date}}</h6>
+                    <div class="card-text offset-1 mb-3">{{reply.content}}</div>
+                  </div>
+                  {%endfor%}
+                  {%if this_user in this_event.attendees.all%}
+                  <form class="col-8 offset-2" action="/poker_night/{{this_event.id}}/reply" method="POST">
+                    {%csrf_token%}
+                    <div class="input-group input-group-sm mb-3">
+                      <input type="text" class="form-control" name="content">
+                      <button class="btn btn-secondary" type="submit">Reply</button>
+                    </div>
+                    <input type="hidden" name="user_id" value="{{this_user.id}}">
+                    <input type="hidden" name="comment_id" value="{{comment.id}}">
+                  </form>
+                  {%endif%}
+                </div>
+                {%endfor%}
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+  </main>
+
+    <!-- JavaScript Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+</html>

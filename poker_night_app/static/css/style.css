@@ -1,0 +1,69 @@
+.bd-placeholder-img {
+  font-size: 1.125rem;
+  text-anchor: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  width: 100%;
+  height: 190px;
+}
+
+@media (min-width: 768px) {
+  .bd-placeholder-img-lg {
+    font-size: 3.5rem;
+  }
+}
+
+.jumbotron {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  margin-bottom: 0;
+  height: 300px;
+  /* border: 2px white solid; */
+  background: url('/static/img/suits4.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: inset 5px 5px 250px 60px #212529;
+}
+
+@media (min-width: 768px) {
+  .jumbotron {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+
+
+
+
+.jumbotron h1 {
+  font-weight: 300;
+  text-align: center;
+}
+
+.jumbotron .container {
+  max-width: 40rem;
+}
+
+footer {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+footer p {
+  margin-bottom: .25rem;
+}
+
+li a img { 
+  vertical-align: middle;
+}
+
+.logo {
+  height: 55px;
+}
+
+.errors li {
+  list-style-type: none;
+}

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  {% load static %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="generator" content="Jekyll v4.1.1">
+  <title>Host an Event</title>
+  <!-- Bootstrap core CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="{%static 'css/style.css'%}">
+</head>
+
+<body class="bg-dark">
+  <header class="sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand px-2" href="/poker_night/home"><img class="logo" src="/static/img/poker_night.png" alt="Poker Night"></a>
+        <div class="dropdown px-4">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+            Menu
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end bg-secondary" aria-labelledby="dropdownMenu2">
+            <li><a class="dropdown-item text-white" type="button" href="/poker_night/home"><img src="/static/img/home.svg" alt="Home Icon"> Home</a></li>
+            <li><a class="dropdown-item text-white" type="button" href="/poker_night/{{this_user.id}}/my_events" ><img src="/static/img/grid.svg" alt="Grid Icon"> My Events</a></li>
+            <li><a class="dropdown-item text-white" type="button" href="/poker_night/{{this_user.id}}/host"><img src="/static/img/calendar.svg" alt="Calendar Icon"> Host an Event</a></li>
+            <li><hr class="dropdown-divider text-white"></li>
+            <li><a class="dropdown-item text-white" type="button" href="/user/logout"><img src="/static/img/log-out.svg" alt="Logout Icon"> Logout</a></li>
+          </ul>
+        </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main role="main">
+    <section class="jumbotron text-center border-white" id="jumbotron">
+      <div class="container">
+        <div class="align-text-top">
+          <h1 class="text-white">Edit Your Cash Game</h1>
+        </div>
+      </div>
+    </section>
+    <div class="album py-5 bg-dark">
+      <div class="container">
+        <div class="col-md-6 offset-md-3">
+          <div class="col-12 text-center">
+            {%if messages%}
+            <ul class="errors">
+                {%for message in messages%}
+                    <li class="text-danger ">{{message}}</li>
+                {%endfor%}
+            </ul>
+            {% endif %}
+          </div>
+          <form method="POST" action="/poker_night/{{this_event.id}}/cash_game/update" class="row g-3 text-white">
+            {%csrf_token%}
+            <div class="col-12">
+              <label for="street" class="form-label">Address</label>
+              <input type="text" class="form-control" name="street" value="{{this_event.street}}">
+            </div>
+            <div class="col-12">
+              <label for="street2" class="form-label">Address 2</label>
+              <input type="text" class="form-control" name="street2" value="{{this_event.street_two}}">
+            </div>
+            <div class="col-md-6">
+              <label for="city" class="form-label">City</label>
+              <input type="text" class="form-control" name="city" value="{{this_event.city}}">
+            </div>
+            <div class="col-md-3">
+              <label for="state" class="form-label">State</label>
+              <input type="text" class="form-control" name="state" value="{{this_event.state}}">
+            </div>
+            <div class="col-md-3">
+              <label for="zip_code" class="form-label">Zip</label>
+              <input type="text" class="form-control" name="zip_code" value="{{this_event.zip_code}}">
+            </div>
+            <div class="col-12">
+              <label for="date" class="form-label">When</label>
+              <input type="datetime-local" class="form-control" name="date" value="{{this_event.scheduled_for|date:'Y-m-d'}}T{{this_event.scheduled_for|time:'H:i'}}">
+            </div>
+            <div class="col-12">
+              <label for="">Stakes</label>
+              <div class="input-group mb-3">
+                <span class="input-group-text">$</span>
+                <input type="text" class="form-control" name="s_blind" value="{{small_blind}}">
+                <span class="input-group-text">/</span>
+                <span class="input-group-text">$</span>
+                <input type="text" class="form-control" name="b_blind" value="{{big_blind}}">
+              </div>
+            </div>
+
+                <div class="col-md-6">
+                  <label for="min_buy" class="form-label">Minimum buy-in</label>
+                  <div class="input-group mb-3">
+                    <span class="input-group-text">$</span>
+                    <input type="number" class="form-control" name="min_buy" value="{{this_event.cash_game.min_buy}}">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="max_buy" class="form-label">Maximum buy-in</label>
+                  <div class="input-group mb-3">
+                    <span class="input-group-text">$</span>
+                    <input type="number" class="form-control" name="max_buy" value="{{this_event.cash_game.max_buy}}">
+                  </div>
+                </div>
+                <div class="col-12">
+                  <label for="max_player" class="form-label">Maximum Number of players</label>
+                  <input type="number" class="form-control" step="1" name="max_players" value="{{this_event.max_players}}">
+                </div>
+                <div class="col-12">
+                  <label for="desc" class="form-label">Description</label>
+                  <textarea class="form-control" rows="5" name="desc">{{this_event.notes}}</textarea>
+                </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary">Edit Event</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+  </main>
+
+    <!-- JavaScript Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+</html>
