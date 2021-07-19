@@ -19,9 +19,9 @@ class EventManager(models.Manager):
             errors['buy_in'] = "Buy-in cannot be blank"
         if len(postData['re_entries']) <1:
             errors['re_entries'] = "Number of re-entries cannot be blank"
-        if len(postData['levels']) <1 or len(postData['levles']) >3 :
-            errors['levels'] = "Level Duration must be between 1 and 3 digits"
-        if len(postData['max_players']) <1 or postData['max_players'] < 2 :
+        if len(postData['levels']) <1  :
+            errors['levels'] = "Level Duration is required"
+        if len(postData['max_players']) <1 :
             errors['levels'] = "Maximum number of players must be greater than 1"
         return errors
 
@@ -42,8 +42,8 @@ class EventManager(models.Manager):
             errors['min_buy'] = "Minimum buy-in cannot be blank"
         if len(postData['max_buy']) <1:
             errors['max_buy'] = "Minimum buy-in cannot be blank"
-        if len(postData['max_players']) <1 or postData['max_players'] < 2 :
-            errors['levels'] = "Maximum number of players must be greater than 1"
+        if len(postData['max_players']) <1  :
+            errors['max_players'] = "Maximum number of players must be greater than 1"
         return errors
 
 
